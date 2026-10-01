@@ -106,7 +106,7 @@ export default function Analytics() {
                 title="Usage heatmap"
                 subtitle={heatMode === 'weekday' ? `Occupied booking-hours by weekday and hour${labFilter ? ' — selected lab' : ''}` : heatMode === 'lab' ? 'Occupied booking-hours by lab and hour' : "Booking-hours by requester's department and hour"}
                 action={
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {heatMode === 'weekday' && (
                       <Select value={labFilter} onChange={(e) => setLabFilter(e.target.value)} className="w-auto py-1 text-xs" aria-label="Lab">
                         <option value="">All labs</option>

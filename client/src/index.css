@@ -1,7 +1,12 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Booking accent (CTA). Used with dark text: orange-500 on slate-950 ≈ 8:1. */
+  --color-accent-400: #fb923c;
+  --color-accent-500: #f97316;
+  --color-accent-600: #ea580c;
+  --color-brand-950: #172554;
   --color-brand-50: #eff6ff;
   --color-brand-100: #dbeafe;
   --color-brand-200: #bfdbfe;
@@ -40,12 +45,43 @@ body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
 
+@layer base {
+  /* Tailwind v4 dropped the pointer cursor on buttons — restore it for everything clickable. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  [role='tab'],
+  [role='switch'],
+  select:not(:disabled),
+  summary,
+  label[for],
+  input[type='checkbox']:not(:disabled),
+  input[type='radio']:not(:disabled) {
+    cursor: pointer;
+  }
+  /* Visible keyboard focus everywhere (mouse clicks stay ring-free). */
+  :where(a, button, [role='button'], [role='tab'], [role='switch'], summary):focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+  }
+  /* Grid columns may shrink below their longest line, so truncated text never forces horizontal scroll on phones. */
+  .grid > * {
+    min-width: 0;
+  }
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.015em;
+  }
+}
+
 @layer components {
+  /* Flat design: borders define surfaces, no drop shadows. */
   .card {
-    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+    @apply min-w-0 rounded-xl border border-slate-200 bg-white;
   }
   .input {
-    @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-xs placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500;
+    @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 transition-colors duration-150 placeholder:text-slate-400 hover:border-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-slate-700;

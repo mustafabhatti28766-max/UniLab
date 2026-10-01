@@ -13,7 +13,7 @@ import { TIME_OPTIONS, fmtTime, todayStr, CONDITION_LABELS } from '../lib/format
 function LabCard({ lab }) {
   const windowOk = lab.window ? lab.window.available : null;
   return (
-    <Card className="flex flex-col overflow-hidden transition hover:shadow-md">
+    <Card className="flex flex-col overflow-hidden transition-colors duration-150 hover:border-brand-400">
       <Link to={`/labs/${lab.id}`} className="flex-1 p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -163,7 +163,7 @@ export default function Resources() {
               </Button>
             )}
             <Link to="/book">
-              <Button icon={CalendarPlus}>New booking</Button>
+              <Button variant="cta" icon={CalendarPlus}>New booking</Button>
             </Link>
           </>
         }

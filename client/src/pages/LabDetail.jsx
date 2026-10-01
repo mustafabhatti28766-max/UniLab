@@ -56,7 +56,7 @@ export default function LabDetail() {
           {lab.can_manage && <Button variant="secondary" icon={Pencil} onClick={() => setModal('edit')}>Edit</Button>}
           {lab.can_manage_availability && <Button variant="secondary" icon={Ban} onClick={() => setModal('block')}>Block / maintenance</Button>}
           <Link to={`/book?lab=${lab.id}&date=${date}`}>
-            <Button icon={CalendarPlus}>Book this lab</Button>
+            <Button variant="cta" icon={CalendarPlus}>Book this lab</Button>
           </Link>
         </div>
       </div>

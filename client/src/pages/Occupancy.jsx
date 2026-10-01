@@ -45,7 +45,7 @@ export default function Occupancy() {
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {data.labs.map((l) => (
-              <Link key={l.id} to={`/labs/${l.id}`} className={clsx('card block p-5 ring-2 ring-inset transition hover:shadow-md', RING[l.live_status])}>
+              <Link key={l.id} to={`/labs/${l.id}`} className={clsx('card block p-5 ring-2 ring-inset transition-colors duration-150 hover:bg-slate-50', RING[l.live_status])}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="text-xs text-slate-500">{l.code} · {l.department_code}</p>

@@ -40,7 +40,7 @@ export default function MyBookings() {
               Export calendar
             </Button>
             <Link to="/book">
-              <Button icon={CalendarPlus}>New booking</Button>
+              <Button variant="cta" icon={CalendarPlus}>New booking</Button>
             </Link>
           </>
         }

@@ -7,14 +7,21 @@ import { Loader2, X, Inbox, AlertTriangle } from 'lucide-react';
 // Buttons
 // ---------------------------------------------------------------------------
 const BTN_VARIANTS = {
-  primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm disabled:bg-brand-300',
-  secondary: 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shadow-xs disabled:text-slate-400',
+  primary: 'bg-brand-700 text-white hover:bg-brand-800 disabled:bg-brand-300',
+  cta: 'bg-accent-500 text-slate-950 font-semibold hover:bg-accent-400 disabled:opacity-50',
+  secondary: 'bg-white text-slate-700 border border-slate-300 hover:border-slate-400 hover:bg-slate-50 disabled:text-slate-400',
   ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
-  danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm disabled:bg-red-300',
-  success: 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm disabled:bg-emerald-300',
+  danger: 'bg-red-600 text-white hover:bg-red-700 disabled:bg-red-300',
+  success: 'bg-emerald-700 text-white hover:bg-emerald-800 disabled:bg-emerald-300',
   soft: 'bg-brand-50 text-brand-700 hover:bg-brand-100',
 };
-const BTN_SIZES = { xs: 'px-2 py-1 text-xs gap-1', sm: 'px-3 py-1.5 text-sm gap-1.5', md: 'px-4 py-2 text-sm gap-2', lg: 'px-5 py-2.5 text-base gap-2' };
+// md/lg meet the 44px touch target on phones; dense sizes stay compact for tables.
+const BTN_SIZES = {
+  xs: 'px-2 py-1 text-xs gap-1',
+  sm: 'px-3 py-1.5 text-sm gap-1.5',
+  md: 'min-h-11 px-4 py-2 text-sm gap-2 sm:min-h-10',
+  lg: 'min-h-12 px-5 py-2.5 text-base gap-2',
+};
 
 export const Button = forwardRef(function Button(
   { variant = 'primary', size = 'md', loading = false, icon: Icon, className, children, disabled, type = 'button', ...props },
@@ -26,7 +33,7 @@ export const Button = forwardRef(function Button(
       type={type}
       disabled={disabled || loading}
       className={clsx(
-        'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center rounded-lg font-medium transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 disabled:cursor-not-allowed',
         BTN_VARIANTS[variant],
         BTN_SIZES[size],
         className,
@@ -87,7 +94,7 @@ export function Card({ className, children, ...props }) {
 
 export function CardHeader({ title, subtitle, action, icon: Icon, className }) {
   return (
-    <div className={clsx('flex items-start justify-between gap-3 border-b border-slate-100 px-5 py-4', className)}>
+    <div className={clsx('flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-5 py-4', className)}>
       <div className="flex min-w-0 items-start gap-3">
         {Icon && (
           <span className="mt-0.5 rounded-lg bg-brand-50 p-1.5 text-brand-700">
@@ -109,8 +116,8 @@ export function PageHeader({ title, subtitle, actions, back }) {
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {back}
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
+        <h1 className="text-2xl font-bold text-brand-950 sm:text-[1.75rem]">{title}</h1>
+        {subtitle && <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-600">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -129,15 +136,15 @@ export function StatCard({ label, value, icon: Icon, tone = 'blue', hint, to, on
   }[tone];
   const Comp = onClick ? 'button' : 'div';
   return (
-    <Comp onClick={onClick} className={clsx('card flex items-center gap-4 p-4 text-left', onClick && 'transition hover:border-brand-300 hover:shadow')}>
+    <Comp onClick={onClick} className={clsx('card flex items-center gap-4 p-4 text-left', onClick && 'transition-colors duration-150 hover:border-brand-400 hover:bg-brand-50/40')}>
       {Icon && (
         <span className={clsx('rounded-xl p-2.5', toneCls)}>
           <Icon className="size-5" aria-hidden />
         </span>
       )}
       <div className="min-w-0">
-        <p className="text-xs font-medium text-slate-500">{label}</p>
-        <p className="text-2xl font-semibold text-slate-900">{value ?? '—'}</p>
+        <p className="text-xs font-semibold text-slate-600">{label}</p>
+        <p className="text-2xl font-bold text-slate-900 tabular">{value ?? '—'}</p>
         {hint && <p className="truncate text-xs text-slate-500">{hint}</p>}
       </div>
       {to}
@@ -286,7 +293,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
             <h2 className="text-base font-semibold text-slate-900">{title}</h2>
             {description && <p className="mt-0.5 text-sm text-slate-500">{description}</p>}
           </div>
-          <button onClick={onClose} className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Close">
+          <button onClick={onClose} className="-m-1.5 rounded-lg p-2.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800" aria-label="Close">
             <X className="size-5" />
           </button>
         </div>
@@ -311,7 +318,7 @@ export function Tabs({ tabs, value, onChange, className }) {
           aria-selected={value === t.value}
           onClick={() => onChange(t.value)}
           className={clsx(
-            '-mb-px flex shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-sm font-medium transition-colors',
+            '-mb-px flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-sm font-medium transition-colors duration-150',
             value === t.value ? 'border-brand-600 text-brand-700' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800',
           )}
         >

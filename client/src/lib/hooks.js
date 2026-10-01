@@ -30,7 +30,10 @@ export function useAsync(fn, deps = [], { enabled = true } = {}) {
   }, [load, enabled]);
 
   const setData = useCallback((updater) => setState((s) => ({ ...s, data: typeof updater === 'function' ? updater(s.data) : updater })), []);
-  return { ...state, reload: load, setData };
+  // When `enabled` flips on, the first render happens before the effect starts loading —
+  // report it as loading so callers never see { loading: false, data: null }.
+  const loading = state.loading || (enabled && state.data === null && !state.error);
+  return { ...state, loading, reload: load, setData };
 }
 
 export function useDebounced(value, ms = 350) {

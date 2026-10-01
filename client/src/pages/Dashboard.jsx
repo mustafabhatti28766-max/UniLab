@@ -31,7 +31,7 @@ function Greeting({ user }) {
           </Button>
         </Link>
         <Link to="/book">
-          <Button icon={CalendarPlus}>New booking</Button>
+          <Button variant="cta" icon={CalendarPlus}>New booking</Button>
         </Link>
       </div>
     </div>

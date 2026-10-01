@@ -13,7 +13,7 @@ function InstallButton() {
   const { canInstall, install } = useInstallPrompt();
   if (!canInstall) return null;
   return (
-    <button onClick={install} className="flex items-center gap-1.5 rounded-lg border border-brand-200 bg-brand-50 px-2.5 py-1.5 text-sm font-medium text-brand-700 hover:bg-brand-100" title="Install UniLab as an app">
+    <button onClick={install} className="flex min-h-11 items-center gap-1.5 rounded-lg border border-brand-200 bg-brand-50 px-3 text-sm font-medium transition-colors sm:min-h-10 text-brand-700 hover:bg-brand-100" title="Install UniLab as an app">
       <Smartphone className="size-4" /> <span className="hidden sm:inline">Install app</span>
     </button>
   );
@@ -28,7 +28,6 @@ const NAV = [
     title: 'Booking',
     items: [
       { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
-      { to: '/book', label: 'New booking', icon: CalendarPlus, perm: 'bookings.create' },
       { to: '/finder', label: 'Smart finder', icon: Sparkles },
       { to: '/resources', label: 'Labs & equipment', icon: Search },
       { to: '/schedule', label: 'Schedule', icon: CalendarDays },
@@ -66,20 +65,31 @@ function Sidebar({ onNavigate }) {
   const { pendingApprovals } = useNotifications();
   const sections = NAV.map((s) => ({ ...s, items: s.items.filter((i) => !i.perm || can(i.perm)) })).filter((s) => s.items.length);
   return (
-    <nav className="flex h-full flex-col" aria-label="Main">
+    <nav className="flex h-full flex-col bg-brand-950 text-blue-100" aria-label="Main">
       <Link to="/" onClick={onNavigate} className="flex items-center gap-2.5 px-5 py-5">
-        <span className="rounded-xl bg-brand-700 p-2 text-white shadow-sm">
+        <span className="rounded-xl bg-accent-500 p-2 text-slate-950">
           <FlaskConical className="size-5" aria-hidden />
         </span>
         <span>
-          <span className="block text-base font-semibold leading-tight text-slate-900">UniLab</span>
-          <span className="block text-xs text-slate-500">Lab & equipment booking</span>
+          <span className="block text-lg font-extrabold leading-tight text-white">UniLab</span>
+          <span className="block text-xs text-blue-200/80">Lab & equipment booking</span>
         </span>
       </Link>
+      {can('bookings.create') && (
+        <div className="px-4 pb-4">
+          <Link
+            to="/book"
+            onClick={onNavigate}
+            className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-500 px-4 text-sm font-semibold text-slate-950 transition-colors duration-150 hover:bg-accent-400"
+          >
+            <CalendarPlus className="size-4" aria-hidden /> New booking
+          </Link>
+        </div>
+      )}
       <div className="scroll-thin flex-1 space-y-6 overflow-y-auto px-3 pb-6">
         {sections.map((section) => (
           <div key={section.title}>
-            <p className="px-3 pb-1.5 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">{section.title}</p>
+            <p className="px-3 pb-1.5 text-[11px] font-bold tracking-wider text-blue-300/70 uppercase">{section.title}</p>
             <ul className="space-y-0.5">
               {section.items.map((item) => (
                 <li key={item.to}>
@@ -89,15 +99,17 @@ function Sidebar({ onNavigate }) {
                     onClick={onNavigate}
                     className={({ isActive }) =>
                       clsx(
-                        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                        isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+                        'relative flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150',
+                        isActive
+                          ? 'bg-white/10 text-white before:absolute before:inset-y-2 before:left-0 before:w-1 before:rounded-full before:bg-accent-500'
+                          : 'text-blue-100/85 hover:bg-white/5 hover:text-white',
                       )
                     }
                   >
                     <item.icon className="size-4 shrink-0" aria-hidden />
                     <span className="flex-1">{item.label}</span>
                     {item.badge === 'approvals' && pendingApprovals > 0 && (
-                      <span className="rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-semibold text-white tabular">{pendingApprovals}</span>
+                      <span className="rounded-full bg-accent-500 px-1.5 py-0.5 text-[10px] font-bold text-slate-950 tabular">{pendingApprovals}</span>
                     )}
                   </NavLink>
                 </li>
@@ -106,8 +118,8 @@ function Sidebar({ onNavigate }) {
           </div>
         ))}
       </div>
-      <div className="border-t border-slate-200 px-5 py-3 text-xs text-slate-500">
-        Signed in as <span className="font-medium text-slate-700">{ROLE_LABELS[user.role]}</span>
+      <div className="border-t border-white/10 px-5 py-3 text-xs text-blue-200/80">
+        Signed in as <span className="font-semibold text-white">{ROLE_LABELS[user.role]}</span>
         {user.department_code && <> · {user.department_code}</>}
       </div>
     </nav>
@@ -149,9 +161,9 @@ function NotificationBell() {
 
   return (
     <div className="relative" ref={ref}>
-      <button onClick={() => setOpen((o) => !o)} className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-800" aria-label={`Notifications${unread ? `, ${unread} unread` : ''}`}>
+      <button onClick={() => setOpen((o) => !o)} className="relative rounded-lg p-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900" aria-label={`Notifications${unread ? `, ${unread} unread` : ''}`}>
         <Bell className="size-5" />
-        {unread > 0 && <span className="absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white tabular">{unread > 9 ? '9+' : unread}</span>}
+        {unread > 0 && <span className="absolute top-1.5 right-1.5 flex min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white tabular">{unread > 9 ? '9+' : unread}</span>}
       </button>
       {open && (
         <div className="absolute right-0 z-40 mt-2 w-[calc(100vw-2rem)] max-w-sm overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
@@ -195,8 +207,8 @@ function UserMenu() {
   const initials = user.name.replace(/^(Dr\.|Prof\.)\s*/, '').split(' ').map((p) => p[0]).slice(0, 2).join('');
   return (
     <div className="relative" ref={ref}>
-      <button onClick={() => setOpen((o) => !o)} className="flex items-center gap-2 rounded-lg p-1 pr-2 hover:bg-slate-100" aria-label="Account menu">
-        <span className="flex size-8 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-800">{initials}</span>
+      <button onClick={() => setOpen((o) => !o)} className="flex min-h-11 items-center gap-2 rounded-lg p-1.5 pr-2 transition-colors hover:bg-slate-100" aria-label="Account menu">
+        <span className="flex size-8 items-center justify-center rounded-full bg-brand-950 text-xs font-bold text-white">{initials}</span>
         <span className="hidden text-left sm:block">
           <span className="block max-w-[160px] truncate text-sm font-medium leading-tight text-slate-800">{user.name}</span>
           <span className="block text-xs leading-tight text-slate-500">{ROLE_LABELS[user.role]}</span>
@@ -236,14 +248,14 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen lg:pl-64">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-slate-200 bg-white lg:block">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 bg-brand-950 lg:block">
         <Sidebar />
       </aside>
       {drawer && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-slate-900/40" onClick={() => setDrawer(false)} />
-          <aside className="absolute inset-y-0 left-0 w-72 max-w-[85vw] bg-white shadow-xl">
-            <button onClick={() => setDrawer(false)} className="absolute top-4 right-3 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" aria-label="Close menu">
+          <aside className="absolute inset-y-0 left-0 w-72 max-w-[85vw] bg-brand-950">
+            <button onClick={() => setDrawer(false)} className="absolute top-3.5 right-3 rounded-lg p-2.5 text-blue-200 hover:bg-white/10 hover:text-white" aria-label="Close menu">
               <X className="size-5" />
             </button>
             <Sidebar onNavigate={() => setDrawer(false)} />
@@ -251,7 +263,7 @@ export default function Layout() {
         </div>
       )}
       <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur sm:px-6">
-        <button onClick={() => setDrawer(true)} className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
+        <button onClick={() => setDrawer(true)} className="-ml-1 rounded-lg p-2.5 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
           <Menu className="size-5" />
         </button>
         <form onSubmit={search} className="relative max-w-md flex-1" role="search">
@@ -260,7 +272,7 @@ export default function Layout() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search labs, equipment, facilities…"
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pr-3 pl-9 text-sm placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+            className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 pr-3 pl-9 text-sm transition-colors duration-150 sm:h-10 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
             aria-label="Search resources"
           />
         </form>
